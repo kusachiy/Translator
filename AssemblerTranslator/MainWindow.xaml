@@ -1,0 +1,42 @@
+﻿<controls:MetroWindow x:Class="AssemblerTranslator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AssemblerTranslator"
+        xmlns:controls ="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="Translator" Height="500" Width="500">
+    <controls:MetroWindow.DataContext>
+        <local:MainManager></local:MainManager>
+    </controls:MetroWindow.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="7*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu x:Name="menu" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="500">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Open" Command="{Binding FileOpenCommand}"></MenuItem>
+                <MenuItem Header="Save" Command="{Binding FileSaveCommand}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Компиляция" Command="{Binding CompileCommand}"/>
+        </Menu>
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <GroupBox Margin="10,0,0,0" Header="Исходный код" Grid.Column="0">
+                <TextBox Name="codebox" Text="{Binding Path = CodeText,UpdateSourceTrigger=PropertyChanged}"></TextBox>               
+            </GroupBox>
+            <GroupBox Margin="0,0,10,0" Header="Результат" Grid.Column="1">
+                <TextBox IsEnabled="False" Text="{Binding Answer}"></TextBox>
+            </GroupBox>
+        </Grid>
+        <GroupBox Grid.Row="2" Header="Состояние компиляции">
+            <TextBox></TextBox>
+        </GroupBox>
+    </Grid>
+</controls:MetroWindow>
