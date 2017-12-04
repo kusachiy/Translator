@@ -84,11 +84,19 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Analyzers\CodeAnalyzer.cs" />
+    <Compile Include="Analyzers\CodeGenerator.cs" />
+    <Compile Include="Cycles\Abstract\BaseCycle.cs" />
+    <Compile Include="DataTypes\Abstract\BaseVariable.cs" />
+    <Compile Include="DataTypes\MyBool.cs" />
+    <Compile Include="DataTypes\MyInt.cs" />
     <Compile Include="Analyzers\PolishNotationAnalyzer.cs" />
+    <Compile Include="Analyzers\Translator.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Expression\Abstract\BaseAssignment.cs" />
+    <Compile Include="Expression\AssignmentInt.cs" />
     <Compile Include="MainManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -123,6 +131,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

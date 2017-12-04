@@ -54,10 +54,9 @@ namespace AssemblerTranslator
         }
         private void Compile()
         {
-            var ca = new CodeAnalyzer(CodeText);
-            ca.StartAnalysis();
-            Answer = ca.GetLog;
-
+            Translator translator = new Translator(_codeText);
+            translator.Compile();
+            Answer = translator.GetAssemblerCode;
         }
     }
 }
