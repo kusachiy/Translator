@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\App.xaml
-11151548125
+3-1260861683
 
 201178653098
 70-1295194144
-MainWindow.xaml;
+MainWindow.xaml;Resources\Icons.xaml;Resources\IconsNonShared.xaml;
 
-False
+True
 

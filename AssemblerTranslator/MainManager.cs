@@ -17,22 +17,25 @@ namespace AssemblerTranslator
         private string _fileName;
         private string _codeText;
         private string _answer;
+        private string _log;
 
 
         public RelayCommand FileOpenCommand { get; private set; }
         public RelayCommand FileSaveCommand { get; private set; }
         public RelayCommand CompileCommand { get; private set; }
+        public RelayCommand SaveAssemblerCodeCommand { get; private set; }
         public string CodeText { get { return _codeText; } set { _codeText = value;RaisePropertyChanged("CodeText"); } }
         public string Answer { get { return _answer; } set { _answer= value; RaisePropertyChanged("Answer"); } }
-
-
+        public string Log { get { return _log; } set { _log = value; RaisePropertyChanged("Log"); } }
 
         public MainManager()
         {
             FileOpenCommand = new RelayCommand(OpenFile);
             FileSaveCommand = new RelayCommand(SaveFile);
             CompileCommand = new RelayCommand(Compile);
-        }
+            SaveAssemblerCodeCommand = new RelayCommand(SaveAssemblerCode);
+        }        
+
         private void OpenFile()
         {
             OpenFileDialog myDialog = new OpenFileDialog();
@@ -57,6 +60,15 @@ namespace AssemblerTranslator
             Translator translator = new Translator(_codeText);
             translator.Compile();
             Answer = translator.GetAssemblerCode;
+        }
+
+        private void SaveAssemblerCode()
+        {
+            var path = Path.Combine(Path.GetDirectoryName(_fileName), "testCode.asm");
+
+            StreamWriter sw = new StreamWriter(path);
+            sw.WriteLine(Answer);
+            sw.Close();
         }
     }
 }

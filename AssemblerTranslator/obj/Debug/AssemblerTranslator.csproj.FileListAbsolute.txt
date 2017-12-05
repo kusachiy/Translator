@@ -31,3 +31,5 @@ C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\
 C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\obj\Debug\App.baml
 C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\obj\Debug\AssemblerTranslator.csproj.CoreCompileInputs.cache
+C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\obj\Debug\Resources\Icons.baml
+C:\Users\hrusha\Desktop\Projects\_study\AssemblerTranslator\AssemblerTranslator\obj\Debug\Resources\IconsNonShared.baml
