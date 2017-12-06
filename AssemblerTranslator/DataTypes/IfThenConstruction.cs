@@ -11,6 +11,7 @@ namespace AssemblerTranslator.DataTypes.Conditions
 {
     class IfThenConstruction:NestedBlock
     {
+        private static int counter = 0;
         public IfThenConstruction(string condition,string[] body)
         {
             _condition = new IntCondition(condition);
@@ -25,13 +26,15 @@ namespace AssemblerTranslator.DataTypes.Conditions
 
         public override void AddToAssemblerCode()
         {
+            string point = $"endif{counter}";
             _condition.AddToAssemblerCode();
-            CodeGenerator.AddNewInstruction($"{_condition.Operator} endif");
+            CodeGenerator.AddNewInstruction($"{_condition.ReverseOperator} {point}");
             foreach (var item in _codeStrings)
             {
                 item.AddToAssemblerCode();
             }
-            CodeGenerator.AddNewInstruction("endif:");
+            CodeGenerator.AddNewInstruction($"{point}:");
+            counter++;
         }
     }
 }

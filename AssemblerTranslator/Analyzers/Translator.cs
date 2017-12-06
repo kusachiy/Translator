@@ -19,27 +19,18 @@ namespace AssemblerTranslator.Analyzers
         {
             CodeGenerator.Reset();
             CodeGenerator.WriteDataSegment();
-            StartAnalysis();
+            _codeAnalyzer.StartAnalysis();
             CodeGenerator.WriteVariables(_codeAnalyzer.GetVariables);
             CodeGenerator.WriteSegmentsOfStackAndCode();
-            WriteAssignments();
+
+            _codeAnalyzer.AddAssignmentsCode();
             _codeAnalyzer.PrintResult();
+
             CodeGenerator.WriteEndOfMainProcedure();
             CodeGenerator.WritePrintValueProcedure();
             CodeGenerator.WriteEndOfCode();
-        }
-        private void StartAnalysis()
-        {
-            _codeAnalyzer.StartAnalysis();
-        }
-        private void WriteAssignments()
-        {
-            _codeAnalyzer.AddAssignmentsCode();
-        }
-        public string GetVariablesValues()
-        {
-            return _codeAnalyzer.GetLog;
-        }
+        }      
+       
         public string GetAssemblerCode => CodeGenerator.Generate();
     }
 }

@@ -58,14 +58,22 @@ namespace AssemblerTranslator
         private void Compile()
         {
             Translator translator = new Translator(_codeText);
-            translator.Compile();
+            try
+            {
+                translator.Compile();
+            }
+            catch (Exception e)
+            {
+                Log = e.Message;
+                return;
+            }
+            Log = $"Компиляция успешно завершена в {DateTime.Now}";
             Answer = translator.GetAssemblerCode;
         }
 
         private void SaveAssemblerCode()
         {
-            var path = Path.Combine(Path.GetDirectoryName(_fileName), "testCode.asm");
-
+            var path = Path.Combine(Path.GetDirectoryName(_fileName), "asm_files\\testCode.asm");
             StreamWriter sw = new StreamWriter(path);
             sw.WriteLine(Answer);
             sw.Close();

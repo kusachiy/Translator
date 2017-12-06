@@ -55,11 +55,17 @@ namespace AssemblerTranslator.Expression
                     ReverseOperator = "jl";
                     break;
             }
+            CheckCondition();
         }
 
         public override void AddToAssemblerCode()
         {
             CodeGenerator.CompariseIntExpressions(_leftPart, _rightPart);
+        }
+        private void CheckCondition()
+        {
+            PolishNotationAnalyzer.GetExpression(_leftPart);
+            PolishNotationAnalyzer.GetExpression(_rightPart);
         }
     }
 }

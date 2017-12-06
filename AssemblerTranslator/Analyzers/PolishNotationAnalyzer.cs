@@ -31,6 +31,7 @@ namespace AssemblerTranslator.Analyzers
 
         public static string GetExpression(string input)
         {
+            bool waitArg = true;
             string output = string.Empty; //Строка для хранения выражения
             Stack<char> operStack = new Stack<char>(); //Стек для хранения операторов
 
@@ -42,6 +43,8 @@ namespace AssemblerTranslator.Analyzers
 
                 if (Char.IsLetter(input[i])) //Если буква
                 {
+                    if (!waitArg)
+                        throw new Exception("Ошибка в синтаксисе условия");
                     //Читаем до разделителя или оператора, что бы получить число
                     while (!IsDelimeter(input[i]) && !IsIntOperator(input[i]))
                     {
@@ -53,10 +56,13 @@ namespace AssemblerTranslator.Analyzers
 
                     output += " "; //Дописываем после числа пробел в строку с выражением
                     i--; //Возвращаемся на один символ назад, к символу перед разделителем
+                    waitArg = false;
                 }
                 //Если символ - цифра, то считываем все число
                 if (Char.IsDigit(input[i])) //Если цифра
                 {
+                    if (!waitArg)
+                        throw new Exception("Ошибка в синтаксисе условия");
                     //Читаем до разделителя или оператора, что бы получить число
                     while (!IsDelimeter(input[i]) && !IsIntOperator(input[i]))
                     {
@@ -68,11 +74,14 @@ namespace AssemblerTranslator.Analyzers
 
                     output += " "; //Дописываем после числа пробел в строку с выражением
                     i--; //Возвращаемся на один символ назад, к символу перед разделителем
+                    waitArg = false;
+
                 }
 
                 //Если символ - оператор
                 if (IsIntOperator(input[i])) //Если оператор
                 {
+
                     if (input[i] == '(') //Если символ - открывающая скобка
                         operStack.Push(input[i]); //Записываем её в стек
                     else if (input[i] == ')') //Если символ - закрывающая скобка
@@ -88,25 +97,29 @@ namespace AssemblerTranslator.Analyzers
                     }
                     else //Если любой другой оператор
                     {
+                        if (waitArg)
+                            throw new Exception("Ошибка в синтаксисе условия");
                         if (operStack.Count > 0) //Если в стеке есть элементы
                             if (GetPriority(input[i]) <= GetPriority(operStack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
                                 output += operStack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
 
                         operStack.Push(char.Parse(input[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
-
+                        waitArg = true;
                     }
                 }
             }
-
+            if (waitArg)
+                throw new Exception();
             //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (operStack.Count > 0)
                 output += operStack.Pop() + " ";
-
+            
             return output; //Возвращаем выражение в постфиксной записи
         }
 
         public static string GetBoolExpression(string input)
         {
+            bool waitArg = true;
             input = ToSymbolOperators(input);
 
             string output = string.Empty; //Строка для хранения выражения
@@ -120,6 +133,8 @@ namespace AssemblerTranslator.Analyzers
 
                 if (Char.IsLetter(input[i])) //Если буква
                 {
+                    if (!waitArg)
+                        throw new Exception("Ошибка в синтаксисе условия");
                     //Читаем до разделителя или оператора, что бы получить число
                     while (!IsDelimeter(input[i]) && !IsBoolOperator(input[i]))
                     {
@@ -128,13 +143,15 @@ namespace AssemblerTranslator.Analyzers
 
                         if (i == input.Length) break; //Если символ - последний, то выходим из цикла
                     }
-
+                    waitArg = false;
                     output += " "; //Дописываем после числа пробел в строку с выражением
                     i--; //Возвращаемся на один символ назад, к символу перед разделителем
                 }
                 //Если символ - цифра, то считываем все число
                 if (Char.IsDigit(input[i])) //Если цифра
                 {
+                    if (!waitArg)
+                        throw new Exception("Ошибка в синтаксисе условия");
                     //Читаем до разделителя или оператора, что бы получить число
                     while (!IsDelimeter(input[i]) && !IsBoolOperator(input[i]))
                     {
@@ -143,14 +160,14 @@ namespace AssemblerTranslator.Analyzers
 
                         if (i == input.Length) break; //Если символ - последний, то выходим из цикла
                     }
-
+                    waitArg = false;
                     output += " "; //Дописываем после числа пробел в строку с выражением
                     i--; //Возвращаемся на один символ назад, к символу перед разделителем
                 }
 
                 //Если символ - оператор
                 if (IsBoolOperator(input[i])) //Если оператор
-                {
+                {                    
                     if (input[i] == '(') //Если символ - открывающая скобка
                         operStack.Push(input[i]); //Записываем её в стек
                     else if (input[i] == ')') //Если символ - закрывающая скобка
@@ -165,7 +182,11 @@ namespace AssemblerTranslator.Analyzers
                         }
                     }                    
                     else //Если любой другой оператор
-                    {
+                    {                      
+
+                        if (waitArg && input[i] != '!')
+                            throw new Exception("Ошибка в синтаксисе условия");
+                        waitArg = true;
                         if (operStack.Count > 0) //Если в стеке есть элементы
                             if (GetBoolPriority(input[i]) <= GetBoolPriority(operStack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
                                 output += operStack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
@@ -175,7 +196,8 @@ namespace AssemblerTranslator.Analyzers
                     }
                 }
             }
-
+            if (waitArg)
+                throw new Exception();
             //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (operStack.Count > 0)
                 output += operStack.Pop() + " ";
@@ -283,8 +305,10 @@ namespace AssemblerTranslator.Analyzers
 
         private static string ToSymbolOperators(string expression)
         {
-            expression = expression.Replace("AND", "&").Replace("OR", "|").Replace("XOR", "^").Replace("NOT", "!");
+            expression = expression.Replace("AND", "&").Replace("XOR", "^").Replace("OR", "|").Replace("NOT", "!");
             return expression;
         }
+
+       
     }
 }

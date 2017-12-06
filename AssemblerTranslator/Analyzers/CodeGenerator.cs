@@ -191,7 +191,7 @@ namespace AssemblerTranslator.Analyzers
                                 AddNewInstruction("push ax");
                                 break;
                             case '^':
-                                AddNewInstruction("xor bx");
+                                AddNewInstruction("xor ax,bx");
                                 AddNewInstruction("push ax");
                                 break;
                         }

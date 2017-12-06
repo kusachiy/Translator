@@ -18,5 +18,7 @@ namespace AssemblerTranslator.Expression
             RightPart = PolishNotationAnalyzer.GetExpression(RightPart);
             CodeGenerator.InsertIntExpression(LeftPart, RightPart);
         }
+
+
     }
 }

@@ -15,15 +15,15 @@ namespace AssemblerTranslator.Analyzers
     {
         string[] _codeStrings;
         string[] _types = { "int", "bool" };
-        string[] _keyWords = { "if", "for", "while" };
+        string[] _keyWords = { "if", "for", "while","print" };
         char[] _separators = { '(', ')', '{', '}',' ','=' };
         List<BaseVariable> _variables;
         List<BaseAssignment> _assignments;
-        private string _printedValue;
-        private int caret = 0;
+        private List<BaseVariable> _printedValues= new List<BaseVariable>();
+        private int caret;
 
-        public string GetValue => _printedValue;
-        public string GetLog => VariablesLog();
+        //public string GetValue => _printedValue;
+
         public List<BaseVariable> GetVariables => _variables;
 
 
@@ -36,18 +36,18 @@ namespace AssemblerTranslator.Analyzers
 
         public void StartAnalysis()
         {
-            int caret = 0;
+            caret = 0;
             caret += VariablesAnalysis();
             if (_codeStrings[caret] != "begin")
-                return;
+                throw new Exception($"Ожидается 'begin' Строка №{caret + 1}");
             caret++;
             if (_codeStrings.Last() != "end")
-                return;               
+                throw new Exception($"Ожидается 'end' Строка №{caret + 1}");
             //PrintAnalysis(_codeStrings.Length - 2);
         }
         public void AddAssignmentsCode()
         {
-            while (caret < _codeStrings.Length - 2)
+            while (caret < _codeStrings.Length - 1)
             {
                 caret += StrongAssingmentAnalysis(caret);
             }
@@ -64,6 +64,8 @@ namespace AssemblerTranslator.Analyzers
                 var buf = fString.Substring(lexems[0].Length + 1).Trim().Split(',');
                 foreach (var item in buf)
                 {
+                    if(!IsIdent(item))
+                        throw new Exception($"Не идентификатор. Строка №{caret +1}");
                     if (_types[0] == type)
                         _variables.Add(new MyIntVariable(item));
                     else
@@ -76,16 +78,24 @@ namespace AssemblerTranslator.Analyzers
         private int StrongAssingmentAnalysis(int index)
         {
             var str = _codeStrings[index];
-            var parts = str.Split(_separators);
-            if (!_keyWords.Contains(parts[0]))
+            var parts = str.Split();
+            if (!_keyWords.Contains(parts[0].ToLower()))
             {
                 AssignmentAnalysis(index);
                 return 1;
             }
             else
             {
-                List<string> body = new List<string>();
-               
+                if (parts[0].ToLower() == "print")
+                {
+                    var v = _variables.FirstOrDefault(s => s.Name == parts[1]);
+                    if (v == null)
+                        throw new Exception($"Неизвестная переменная. Строка №{caret+1}");
+                    _printedValues.Add(v);
+                    return 1;
+                }
+                List<string> body = new List<string>();                  
+                
                 if (parts[0].ToLower() == "if")
                 {
                     string condition = "";
@@ -103,8 +113,13 @@ namespace AssemblerTranslator.Analyzers
                         if (i == _codeStrings.Length - 1)
                             throw new Exception("EndIf не найдено");
                     }
-                    IfThenConstruction construction = new IfThenConstruction(condition, body.ToArray());
-                    construction.AddToAssemblerCode();
+                    try
+                    {
+                        IfThenConstruction construction = new IfThenConstruction(condition, body.ToArray());
+                        construction.AddToAssemblerCode();
+                    }
+                    catch (Exception e)
+                    { throw new Exception($"Ошибка в ветвлении.{e.Message}. Строка {caret + 1}"); }
                     return body.Count+2;
                 }
                 else if (parts[0].ToLower() == "while")
@@ -122,8 +137,14 @@ namespace AssemblerTranslator.Analyzers
                         if (i == _codeStrings.Length - 1)
                             throw new Exception("Loop не найдено");
                     }
-                    WhileConstruction construction = new WhileConstruction(condition, body.ToArray());
-                    construction.AddToAssemblerCode();
+                    
+                    try
+                    {
+                        WhileConstruction construction = new WhileConstruction(condition, body.ToArray());
+                        construction.AddToAssemblerCode();
+                    }
+                    catch (Exception e)
+                    { throw new Exception($"Ошибка в цикле.{e.Message}. Строка {caret + 1}"); }
                     return body.Count + 2;
                 }
             }
@@ -135,32 +156,41 @@ namespace AssemblerTranslator.Analyzers
             var parts = str.Split('=');
             var cVar = _variables.FirstOrDefault(v => v.Name == parts[0].Trim());
             if (cVar==null)
-                return;
+                throw new Exception($"Неизвестная переменная. Строка №{caret + 1}");
             string expression="";
             if (cVar.GetType == typeof(int))
             {
                 AssignmentInt assignmentInt = new AssignmentInt(parts[0], parts[1]);
-                assignmentInt.AddToAssemblerCode();
+                try { assignmentInt.AddToAssemblerCode(); }
+                catch{ throw new Exception($"Синтаксическая ошибка. Строка №{caret + 1}"); }
             }
             else
             {
                 AssignmentBool assignment = new AssignmentBool(parts[0], parts[1]);
-                assignment.AddToAssemblerCode();
+                try
+                { assignment.AddToAssemblerCode(); }
+                catch { throw new Exception($"Синтаксическая ошибка. Строка №{caret + 1}"); }
             }           
         }
         public void PrintResult()
         {
-            var str = _codeStrings[_codeStrings.Length - 2].Split() ;
-            CodeGenerator.PrintValue(str[1]);
-        }
-        private string VariablesLog()
-        {
-            string result = "";
-            foreach (var item in _variables)
+            foreach (var varr in _printedValues)
             {
-                result += string.Format("Переменная {0}, Значение {1} \r\n", item.Name, item.Value);
+                CodeGenerator.PrintValue(varr.Name);
             }
-            return result;
-        }        
+        }
+
+        private bool IsIdent(string text)
+        {
+            if (!char.IsLetter(text[0]))
+                return false;
+            for (int i = 1; i < text.Length; i++)
+            {
+                if(!char.IsLetterOrDigit(text[i]))
+                    return false;
+            }
+            return true;
+        }
+        
     }
 }
