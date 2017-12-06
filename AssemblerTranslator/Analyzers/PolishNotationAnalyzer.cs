@@ -16,7 +16,7 @@ namespace AssemblerTranslator.Analyzers
             return false;
         }
 
-        public static bool IsOperator(char с)
+        public static bool IsIntOperator(char с)
         {
             if (("+-/*^()".IndexOf(с) != -1))
                 return true;
@@ -43,7 +43,7 @@ namespace AssemblerTranslator.Analyzers
                 if (Char.IsLetter(input[i])) //Если буква
                 {
                     //Читаем до разделителя или оператора, что бы получить число
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
+                    while (!IsDelimeter(input[i]) && !IsIntOperator(input[i]))
                     {
                         output += input[i]; //Добавляем каждую цифру числа к нашей строке
                         i++; //Переходим к следующему символу
@@ -58,7 +58,7 @@ namespace AssemblerTranslator.Analyzers
                 if (Char.IsDigit(input[i])) //Если цифра
                 {
                     //Читаем до разделителя или оператора, что бы получить число
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i]))
+                    while (!IsDelimeter(input[i]) && !IsIntOperator(input[i]))
                     {
                         output += input[i]; //Добавляем каждую цифру числа к нашей строке
                         i++; //Переходим к следующему символу
@@ -71,7 +71,7 @@ namespace AssemblerTranslator.Analyzers
                 }
 
                 //Если символ - оператор
-                if (IsOperator(input[i])) //Если оператор
+                if (IsIntOperator(input[i])) //Если оператор
                 {
                     if (input[i] == '(') //Если символ - открывающая скобка
                         operStack.Push(input[i]); //Записываем её в стек
@@ -107,6 +107,8 @@ namespace AssemblerTranslator.Analyzers
 
         public static string GetBoolExpression(string input)
         {
+            input = ToSymbolOperators(input);
+
             string output = string.Empty; //Строка для хранения выражения
             Stack<char> operStack = new Stack<char>(); //Стек для хранения операторов
 
@@ -191,7 +193,6 @@ namespace AssemblerTranslator.Analyzers
                 case '-': return 3;
                 case '*': return 4;
                 case '/': return 4;
-                case '^': return 5;
                 default: return 6;
             }
         }
@@ -228,7 +229,7 @@ namespace AssemblerTranslator.Analyzers
                 {
                     string a = string.Empty;
 
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) //Пока не разделитель
+                    while (!IsDelimeter(input[i]) && !IsIntOperator(input[i])) //Пока не разделитель
                     {
                         a += input[i]; //Добавляем
                         i++;
@@ -245,7 +246,7 @@ namespace AssemblerTranslator.Analyzers
                 {
                     string a = string.Empty;
 
-                    while (!IsDelimeter(input[i]) && !IsOperator(input[i])) //Пока не разделитель
+                    while (!IsDelimeter(input[i]) && !IsIntOperator(input[i])) //Пока не разделитель
                     {
                         a += input[i]; //Добавляем
                         i++;
@@ -254,8 +255,9 @@ namespace AssemblerTranslator.Analyzers
                     temp.Push(int.Parse(a)); //Записываем в стек
                     i--;
                 }
-                else if (IsOperator(input[i])) //Если символ - оператор
+                else if (IsIntOperator(input[i])) //Если символ - оператор
                 {
+
                     //Берем два последних значения из стека
                     int a = temp.Pop();
                     int b = temp.Pop();
@@ -277,6 +279,12 @@ namespace AssemblerTranslator.Analyzers
         public static bool BoolCalculator(string input, List<BaseVariable> variables)
         {
             throw new NotImplementedException();
+        }
+
+        private static string ToSymbolOperators(string expression)
+        {
+            expression = expression.Replace("AND", "&").Replace("OR", "|").Replace("XOR", "^").Replace("NOT", "!");
+            return expression;
         }
     }
 }

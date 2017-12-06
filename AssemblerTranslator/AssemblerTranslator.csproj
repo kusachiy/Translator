@@ -85,18 +85,24 @@
     </Page>
     <Compile Include="Analyzers\CodeAnalyzer.cs" />
     <Compile Include="Analyzers\CodeGenerator.cs" />
-    <Compile Include="Cycles\Abstract\BaseCycle.cs" />
-    <Compile Include="DataTypes\Abstract\BaseVariable.cs" />
-    <Compile Include="DataTypes\MyBool.cs" />
-    <Compile Include="DataTypes\MyInt.cs" />
+    <Compile Include="DataTypes\ITranslatable.cs" />
+    <Compile Include="DataTypes\Conditions\ConditionBase.cs" />
+    <Compile Include="DataTypes\IfThenConstruction.cs" />
+    <Compile Include="DataTypes\NestedBlock.cs" />
+    <Compile Include="DataTypes\Cycles\Abstract\BaseCycle.cs" />
+    <Compile Include="DataTypes\Variables\Abstract\BaseVariable.cs" />
+    <Compile Include="DataTypes\Variables\MyBool.cs" />
+    <Compile Include="DataTypes\Variables\MyInt.cs" />
     <Compile Include="Analyzers\PolishNotationAnalyzer.cs" />
     <Compile Include="Analyzers\Translator.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Expression\Abstract\BaseAssignment.cs" />
-    <Compile Include="Expression\AssignmentInt.cs" />
+    <Compile Include="DataTypes\Expression\Abstract\BaseAssignment.cs" />
+    <Compile Include="DataTypes\Expression\AssignmentBool.cs" />
+    <Compile Include="DataTypes\Expression\AssignmentInt.cs" />
+    <Compile Include="DataTypes\Conditions\IntCondition.cs" />
     <Compile Include="MainManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

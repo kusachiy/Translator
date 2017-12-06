@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssemblerTranslator.Cycles.Abstract
+namespace AssemblerTranslator.DataTypes
 {
-    public abstract class BaseCycle
+    public interface ITranslatable
     {
-
+        void AddToAssemblerCode();
     }
 }

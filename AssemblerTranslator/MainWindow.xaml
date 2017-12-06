@@ -8,7 +8,7 @@
         xmlns:controls ="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         WindowState="Normal"
-        Title="Translator (v 0.2)" Width="640" Height="640">    
+        Title="Translator (v 0.2)" Width="600" Height="600">    
     <controls:MetroWindow.DataContext>
         <local:MainManager></local:MainManager>
     </controls:MetroWindow.DataContext>
@@ -24,7 +24,7 @@
             <RowDefinition Height="7*"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
         </Grid.RowDefinitions>       
-        <Grid HorizontalAlignment="Stretch" Margin="0,5">
+        <Grid HorizontalAlignment="Stretch" Margin="0,7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
@@ -89,7 +89,7 @@
             </GroupBox>
         </Grid>
         <GroupBox Grid.Row="1" Header="Состояние компиляции">
-            <TextBox Text="{Binding Log}"></TextBox>
+            <TextBox Text="{Binding Log}" IsEnabled="False"></TextBox>
         </GroupBox>
     </Grid>
 </controls:MetroWindow>

@@ -58,6 +58,7 @@ namespace AssemblerTranslator.Analyzers
         }
         public static void WriteVariables(List<BaseVariable> variables)
         {
+          
             foreach (var vr in variables)
             {
                 AddNewInstruction(vr.Name + "  dw    1");
@@ -65,15 +66,13 @@ namespace AssemblerTranslator.Analyzers
         }
         public static void InsertIntExpression(string leftVar, string reversePolishNotationString)
         {
-            Stack<int> temp = new Stack<int>(); //Dhtvtyysq стек для решения
-
             for (int i = 0; i < reversePolishNotationString.Length; i++) //Для каждого символа в строке
             {                
                 if (Char.IsLetter(reversePolishNotationString[i]))
                 {
                     string a = string.Empty;
 
-                    while (!PolishNotationAnalyzer.IsDelimeter(reversePolishNotationString[i]) && !PolishNotationAnalyzer.IsOperator(reversePolishNotationString[i])) //Пока не разделитель
+                    while (!PolishNotationAnalyzer.IsDelimeter(reversePolishNotationString[i]) && !PolishNotationAnalyzer.IsIntOperator(reversePolishNotationString[i])) //Пока не разделитель
                     {
                         a += reversePolishNotationString[i]; //Добавляем
                         i++;
@@ -86,7 +85,7 @@ namespace AssemblerTranslator.Analyzers
                 {
                     string a = string.Empty;
 
-                    while (!PolishNotationAnalyzer.IsDelimeter(reversePolishNotationString[i]) && !PolishNotationAnalyzer.IsOperator(reversePolishNotationString[i])) //Пока не разделитель
+                    while (!PolishNotationAnalyzer.IsDelimeter(reversePolishNotationString[i]) && !PolishNotationAnalyzer.IsIntOperator(reversePolishNotationString[i])) //Пока не разделитель
                     {
                         a += reversePolishNotationString[i]; //Добавляем
                         i++;
@@ -95,8 +94,8 @@ namespace AssemblerTranslator.Analyzers
                     AddValueToStack(a);
                     i--;
                 }
-                else if (PolishNotationAnalyzer.IsOperator(reversePolishNotationString[i])) //Если символ - оператор
-                {                  
+                else if (PolishNotationAnalyzer.IsIntOperator(reversePolishNotationString[i])) //Если символ - оператор
+                {                    
                     AddNewInstruction("pop bx");
                     AddNewInstruction("pop ax");
                     switch (reversePolishNotationString[i])
@@ -126,6 +125,84 @@ namespace AssemblerTranslator.Analyzers
             AddNewInstruction("mov " + leftVar+ ", ax");
 
         }
+
+        public static void CompariseIntExpressions(string leftExp, string rightExp)
+        {
+            InsertIntExpression("cx", PolishNotationAnalyzer.GetExpression(leftExp));
+            InsertIntExpression("dx", PolishNotationAnalyzer.GetExpression(rightExp));
+            AddNewInstruction("cmp cx, dx");
+        }
+
+        public static void InsertBoolExpression(string leftVar, string reversePolishNotationString)
+        {
+            for (int i = 0; i < reversePolishNotationString.Length; i++) //Для каждого символа в строке
+            {               
+                if (Char.IsLetter(reversePolishNotationString[i]))
+                {
+                    string a = string.Empty;
+
+                    while (!PolishNotationAnalyzer.IsDelimeter(reversePolishNotationString[i]) && !PolishNotationAnalyzer.IsBoolOperator(reversePolishNotationString[i])) //Пока не разделитель
+                    {
+                        a += reversePolishNotationString[i]; //Добавляем
+                        i++;
+                        if (i == reversePolishNotationString.Length) break;
+                    }
+                    if (a.ToLower() == "true")
+                        AddValueToStack("1");
+                    else if (a.ToLower() == "false")
+                        AddValueToStack("0");
+                    else
+                        AddValueToStack(a);
+                    i--;
+                }
+                if (Char.IsDigit(reversePolishNotationString[i]))
+                {
+                    string a = string.Empty;
+
+                    while (!PolishNotationAnalyzer.IsDelimeter(reversePolishNotationString[i]) && !PolishNotationAnalyzer.IsBoolOperator(reversePolishNotationString[i])) //Пока не разделитель
+                    {
+                        a += reversePolishNotationString[i]; //Добавляем
+                        i++;
+                        if (i == reversePolishNotationString.Length) break;
+                    }
+                    AddValueToStack(a);
+                    i--;
+                }
+                else if (PolishNotationAnalyzer.IsBoolOperator(reversePolishNotationString[i])) //Если символ - оператор
+                {
+                    if (reversePolishNotationString[i] == '!')
+                    {
+                        AddNewInstruction("pop ax");
+                        AddNewInstruction("xor ax,00000001b");
+                        AddNewInstruction("push ax");
+                    }
+                    else
+                    {
+                        AddNewInstruction("pop bx");
+                        AddNewInstruction("pop ax");
+                        switch (reversePolishNotationString[i])
+                        {
+                            case '&':
+                                AddNewInstruction("and ax, bx");
+                                AddNewInstruction("push ax");
+                                break;
+                            case '|':
+                                AddNewInstruction("or ax, bx");
+                                AddNewInstruction("push ax");
+                                break;
+                            case '^':
+                                AddNewInstruction("xor bx");
+                                AddNewInstruction("push ax");
+                                break;
+                        }
+                    }
+                }
+            }
+            AddNewInstruction("pop ax");
+            AddNewInstruction("mov " + leftVar + ", ax");
+        }
+
+
         public static void WritePrintValueProcedure()
         {           
                 AddNewInstruction("PRINT PROC NEAR");
@@ -147,6 +224,7 @@ namespace AssemblerTranslator.Analyzers
                 AddNewInstruction("PRINT ENDP");       
 
         }
+
         public static void PrintValue(string _printedValue)
         {
             AddNewInstruction("push ax");
@@ -156,11 +234,7 @@ namespace AssemblerTranslator.Analyzers
         }
 
 
-        public static void WriteBoolExpression(string reversePolishNotationString)
-        {
-            
-
-        }
+   
 
 
         public static string Generate()

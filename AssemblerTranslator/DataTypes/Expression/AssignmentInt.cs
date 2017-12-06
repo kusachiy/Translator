@@ -9,8 +9,8 @@ namespace AssemblerTranslator.Expression
     {
         public AssignmentInt(string leftPart,string rightPart)
         {
-            LeftPart = leftPart;
-            RightPart = rightPart;
+            LeftPart = leftPart.Trim();
+            RightPart = rightPart.Trim();
         }
 
         public override void AddToAssemblerCode()

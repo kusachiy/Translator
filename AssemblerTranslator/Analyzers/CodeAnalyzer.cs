@@ -1,5 +1,6 @@
 ﻿using AssemblerTranslator.DataTypes;
 using AssemblerTranslator.DataTypes.Abstract;
+using AssemblerTranslator.DataTypes.Conditions;
 using AssemblerTranslator.Expression;
 using AssemblerTranslator.Expression.Abstract;
 using System;
@@ -81,13 +82,38 @@ namespace AssemblerTranslator.Analyzers
                 AssignmentAnalysis(index);
                 return 1;
             }
-            return -1;
+            else
+            {
+                List<string> body = new List<string>();
+                string condition = "";
+                for (int i = 1; i < parts.Length-1; i++)
+                {
+                    condition += parts[i];
+                }
+                if (parts[0].ToLower() == "if")
+                {
+                    if (parts.Last().ToLower() != "then")
+                        throw new Exception("Ожидается THEN");
+                    for (int i = index+1; i < _codeStrings.Length; i++)
+                    {                        
+                        if (_codeStrings[i].ToLower().Trim() == "endif")
+                            break;
+                        body.Add(_codeStrings[i]);
+                        if (i == _codeStrings.Length - 1)
+                            throw new Exception("EndIf не найдено");
+                    }
+                    IfThenConstruction construction = new IfThenConstruction(condition, body.ToArray());
+                    construction.AddToAssemblerCode();
+                    return body.Count+2;
+                }
+            }
+            return 0;
         }
         private void AssignmentAnalysis(int index)
         {
             var str = _codeStrings[index];
             var parts = str.Split('=');
-            var cVar = _variables.FirstOrDefault(v => v.Name == parts[0]);
+            var cVar = _variables.FirstOrDefault(v => v.Name == parts[0].Trim());
             if (cVar==null)
                 return;
             string expression="";
@@ -98,10 +124,9 @@ namespace AssemblerTranslator.Analyzers
             }
             else
             {
-                expression = PolishNotationAnalyzer.GetBoolExpression(parts[1]);
-                //cVar.Value = PolishNotationAnalyzer.Calculator(expression);
-            }
-            //_variables.First(v=>v.Name==parts[0]).Value = PolishNotationAnalyzer.Calculator(expression, _variables);
+                AssignmentBool assignment = new AssignmentBool(parts[0], parts[1]);
+                assignment.AddToAssemblerCode();
+            }           
         }
         public void PrintResult()
         {
@@ -116,11 +141,6 @@ namespace AssemblerTranslator.Analyzers
                 result += string.Format("Переменная {0}, Значение {1} \r\n", item.Name, item.Value);
             }
             return result;
-        }
-        public static string TransformBooleanExpression(string expression)
-        {
-            expression = expression.Replace("AND", "&").Replace("OR", "|").Replace("XOR", "^").Replace("NOT", "!");
-            return expression;
-        }
+        }        
     }
 }
