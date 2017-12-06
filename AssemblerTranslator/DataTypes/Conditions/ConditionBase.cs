@@ -14,6 +14,7 @@ namespace AssemblerTranslator.Expression
         protected string _leftPart,_rightPart,_sign = "";
         public bool IsTrue { get; set; }
         public abstract string Operator { get; set; }
+        public abstract string ReverseOperator { get; set; }
 
 
         public abstract void AddToAssemblerCode();

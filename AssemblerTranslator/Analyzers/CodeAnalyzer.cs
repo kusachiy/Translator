@@ -85,13 +85,14 @@ namespace AssemblerTranslator.Analyzers
             else
             {
                 List<string> body = new List<string>();
-                string condition = "";
-                for (int i = 1; i < parts.Length-1; i++)
-                {
-                    condition += parts[i];
-                }
+               
                 if (parts[0].ToLower() == "if")
                 {
+                    string condition = "";
+                    for (int i = 1; i < parts.Length - 1; i++)
+                    {
+                        condition += parts[i];
+                    }
                     if (parts.Last().ToLower() != "then")
                         throw new Exception("Ожидается THEN");
                     for (int i = index+1; i < _codeStrings.Length; i++)
@@ -105,6 +106,25 @@ namespace AssemblerTranslator.Analyzers
                     IfThenConstruction construction = new IfThenConstruction(condition, body.ToArray());
                     construction.AddToAssemblerCode();
                     return body.Count+2;
+                }
+                else if (parts[0].ToLower() == "while")
+                {
+                    string condition = "";
+                    for (int i = 1; i < parts.Length; i++)
+                    {
+                        condition += parts[i];
+                    }
+                    for (int i = index + 1; i < _codeStrings.Length; i++)
+                    {
+                        if (_codeStrings[i].ToLower().Trim() == "loop")
+                            break;
+                        body.Add(_codeStrings[i]);
+                        if (i == _codeStrings.Length - 1)
+                            throw new Exception("Loop не найдено");
+                    }
+                    WhileConstruction construction = new WhileConstruction(condition, body.ToArray());
+                    construction.AddToAssemblerCode();
+                    return body.Count + 2;
                 }
             }
             return 0;

@@ -79,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataTypes\WhileConstruction.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -89,7 +90,6 @@
     <Compile Include="DataTypes\Conditions\ConditionBase.cs" />
     <Compile Include="DataTypes\IfThenConstruction.cs" />
     <Compile Include="DataTypes\NestedBlock.cs" />
-    <Compile Include="DataTypes\Cycles\Abstract\BaseCycle.cs" />
     <Compile Include="DataTypes\Variables\Abstract\BaseVariable.cs" />
     <Compile Include="DataTypes\Variables\MyBool.cs" />
     <Compile Include="DataTypes\Variables\MyInt.cs" />

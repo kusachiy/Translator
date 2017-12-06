@@ -11,6 +11,7 @@ namespace AssemblerTranslator.Expression
     class IntCondition : ConditionBase
     {
         public override string Operator { get; set; } ="";
+        public override string ReverseOperator { get; set; }
 
         public IntCondition(string input)
         {
@@ -31,21 +32,27 @@ namespace AssemblerTranslator.Expression
             {
                 case "==":
                     Operator = "je";
+                    ReverseOperator = "jne";
                     break;
                 case "!=":
                     Operator = "jne";
+                    ReverseOperator = "je";
                     break;
                 case "<":
                     Operator = "jl";
+                    ReverseOperator = "jge";
                     break;
                 case "<=":
                     Operator = "jle";
+                    ReverseOperator = "jg";
                     break;
                 case ">":
                     Operator = "jg";
+                    ReverseOperator = "jle";
                     break;
                 case ">=":
                     Operator = "jge";
+                    ReverseOperator = "jl";
                     break;
             }
         }
