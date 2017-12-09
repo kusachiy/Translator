@@ -9,12 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using AssemblerTranslator.Analyzers;
+using System.Diagnostics;
 
 namespace AssemblerTranslator
 {
     public class MainManager:ViewModelBase
     {
-        private string _fileName;
+        private string _fileName = @"C:\Users\hrusha\Desktop\Projects\_study\AssemblerFiles\tests\1.txt";
         private string _codeText;
         private string _answer;
         private string _log;
@@ -23,7 +24,10 @@ namespace AssemblerTranslator
         public RelayCommand FileOpenCommand { get; private set; }
         public RelayCommand FileSaveCommand { get; private set; }
         public RelayCommand CompileCommand { get; private set; }
+        public RelayCommand OpenWorkFolderCommand { get; private set; }
         public RelayCommand SaveAssemblerCodeCommand { get; private set; }
+
+
         public string CodeText { get { return _codeText; } set { _codeText = value;RaisePropertyChanged("CodeText"); } }
         public string Answer { get { return _answer; } set { _answer= value; RaisePropertyChanged("Answer"); } }
         public string Log { get { return _log; } set { _log = value; RaisePropertyChanged("Log"); } }
@@ -34,7 +38,17 @@ namespace AssemblerTranslator
             FileSaveCommand = new RelayCommand(SaveFile);
             CompileCommand = new RelayCommand(Compile);
             SaveAssemblerCodeCommand = new RelayCommand(SaveAssemblerCode);
-        }        
+            OpenWorkFolderCommand = new RelayCommand(OpenFolder);
+        }
+
+        private void OpenFolder()
+        {
+            var path = Path.Combine(Path.GetDirectoryName(_fileName), "asm_files\\Batnik.bat");
+            if (File.Exists(path))
+            {
+                Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + path));
+            }
+        }
 
         private void OpenFile()
         {
@@ -77,6 +91,7 @@ namespace AssemblerTranslator
             StreamWriter sw = new StreamWriter(path);
             sw.WriteLine(Answer);
             sw.Close();
+            Log = $"Файл testCode.asm создан в {DateTime.Now}";
         }
     }
 }

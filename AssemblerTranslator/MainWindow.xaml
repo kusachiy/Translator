@@ -7,8 +7,8 @@
         xmlns:local="clr-namespace:AssemblerTranslator"
         xmlns:controls ="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        WindowState="Normal"
-        Title="Translator (v 0.2)" Width="600" Height="600">    
+        WindowState="Maximized"
+        Title="Translator (v 0.22)" Width="600" Height="500">    
     <controls:MetroWindow.DataContext>
         <local:MainManager></local:MainManager>
     </controls:MetroWindow.DataContext>
@@ -21,13 +21,13 @@
     </controls:MetroWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="7*"></RowDefinition>
+            <RowDefinition Height="9*"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
         </Grid.RowDefinitions>       
         <Grid HorizontalAlignment="Stretch" Margin="0,7">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <GroupBox Margin="5,0" Header="Исходный код" Grid.Column="0">
                 <GroupBox.HeaderTemplate>
@@ -72,13 +72,21 @@
                         <Grid>
                             <TextBlock Text="{Binding}" VerticalAlignment="Center" FontSize="14"></TextBlock>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button VerticalAlignment="Center" ToolTip="Save to file" Command="{Binding RelativeSource={RelativeSource AncestorType=controls:MetroWindow}, Path=DataContext.SaveAssemblerCodeCommand}" Margin="5,0,0,0">
+                                <Button VerticalAlignment="Center" ToolTip="Save to .asm file" Command="{Binding RelativeSource={RelativeSource AncestorType=controls:MetroWindow}, Path=DataContext.SaveAssemblerCodeCommand}" Margin="5,0,0,0">
+                                    <Rectangle Width="15" Height="15" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Visual="{StaticResource appbar_marvel_ironman}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </Button>
+                                <Button VerticalAlignment="Center" ToolTip="Show .asm file" Command="{Binding RelativeSource={RelativeSource AncestorType=controls:MetroWindow}, Path=DataContext.OpenWorkFolderCommand}" Margin="5,0,0,0">
                                     <Rectangle Width="15" Height="15" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                                         <Rectangle.OpacityMask>
                                             <VisualBrush Visual="{StaticResource appbar_disk_download}" />
                                         </Rectangle.OpacityMask>
                                     </Rectangle>
-                                </Button>                
+                                </Button>
+
                             </StackPanel>
                         </Grid>
                     </DataTemplate>

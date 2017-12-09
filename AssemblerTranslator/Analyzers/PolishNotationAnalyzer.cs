@@ -32,6 +32,7 @@ namespace AssemblerTranslator.Analyzers
         public static string GetExpression(string input)
         {
             bool waitArg = true;
+            int brackets_balance = 0;
             string output = string.Empty; //Строка для хранения выражения
             Stack<char> operStack = new Stack<char>(); //Стек для хранения операторов
 
@@ -83,9 +84,15 @@ namespace AssemblerTranslator.Analyzers
                 {
 
                     if (input[i] == '(') //Если символ - открывающая скобка
+                    {
+                        brackets_balance++;
                         operStack.Push(input[i]); //Записываем её в стек
+                    }
                     else if (input[i] == ')') //Если символ - закрывающая скобка
                     {
+                        brackets_balance--;
+
+
                         //Выписываем все операторы до открывающей скобки в строку
                         char s = operStack.Pop();
 
@@ -108,7 +115,7 @@ namespace AssemblerTranslator.Analyzers
                     }
                 }
             }
-            if (waitArg)
+            if (waitArg || brackets_balance != 0)
                 throw new Exception();
             //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (operStack.Count > 0)
@@ -120,6 +127,8 @@ namespace AssemblerTranslator.Analyzers
         public static string GetBoolExpression(string input)
         {
             bool waitArg = true;
+            int brackets_balance = 0;
+
             input = ToSymbolOperators(input);
 
             string output = string.Empty; //Строка для хранения выражения
@@ -167,11 +176,15 @@ namespace AssemblerTranslator.Analyzers
 
                 //Если символ - оператор
                 if (IsBoolOperator(input[i])) //Если оператор
-                {                    
+                {
                     if (input[i] == '(') //Если символ - открывающая скобка
+                    {
                         operStack.Push(input[i]); //Записываем её в стек
+                        brackets_balance++;
+                    }
                     else if (input[i] == ')') //Если символ - закрывающая скобка
                     {
+                        brackets_balance--;
                         //Выписываем все операторы до открывающей скобки в строку
                         char s = operStack.Pop();
 
@@ -180,9 +193,9 @@ namespace AssemblerTranslator.Analyzers
                             output += s.ToString() + ' ';
                             s = operStack.Pop();
                         }
-                    }                    
+                    }
                     else //Если любой другой оператор
-                    {                      
+                    {
 
                         if (waitArg && input[i] != '!')
                             throw new Exception("Ошибка в синтаксисе условия");
@@ -196,7 +209,7 @@ namespace AssemblerTranslator.Analyzers
                     }
                 }
             }
-            if (waitArg)
+            if (waitArg||brackets_balance!=0)
                 throw new Exception();
             //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (operStack.Count > 0)

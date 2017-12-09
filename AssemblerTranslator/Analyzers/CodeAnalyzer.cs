@@ -14,7 +14,7 @@ namespace AssemblerTranslator.Analyzers
     class CodeAnalyzer
     {
         string[] _codeStrings;
-        string[] _types = { "int", "bool" };
+        string[] _types = { "integer", "bool" };
         string[] _keyWords = { "if", "for", "while","print" };
         char[] _separators = { '(', ')', '{', '}',' ','=' };
         List<BaseVariable> _variables;
@@ -42,7 +42,7 @@ namespace AssemblerTranslator.Analyzers
                 throw new Exception($"Ожидается 'begin' Строка №{caret + 1}");
             caret++;
             if (_codeStrings.Last() != "end")
-                throw new Exception($"Ожидается 'end' Строка №{caret + 1}");
+                throw new Exception($"Ожидается 'end' Строка №{_codeStrings.Length}");
             //PrintAnalysis(_codeStrings.Length - 2);
         }
         public void AddAssignmentsCode()
@@ -73,6 +73,8 @@ namespace AssemblerTranslator.Analyzers
                 }
                 i++;
             }
+            if (i == 0)
+                throw new Exception("Ожидается объявление переменных/ Ошибка в объявлении");
             return i;
         }
         private int StrongAssingmentAnalysis(int index)
@@ -131,11 +133,11 @@ namespace AssemblerTranslator.Analyzers
                     }
                     for (int i = index + 1; i < _codeStrings.Length; i++)
                     {
-                        if (_codeStrings[i].ToLower().Trim() == "loop")
+                        if (_codeStrings[i].ToLower().Trim() == "endwhile")
                             break;
                         body.Add(_codeStrings[i]);
                         if (i == _codeStrings.Length - 1)
-                            throw new Exception("Loop не найдено");
+                            throw new Exception("Endwhile не найдено");
                     }
                     
                     try
@@ -182,6 +184,8 @@ namespace AssemblerTranslator.Analyzers
 
         private bool IsIdent(string text)
         {
+            if (text == "")
+                throw new Exception("Ошибка в опеределении переменных");
             if (!char.IsLetter(text[0]))
                 return false;
             for (int i = 1; i < text.Length; i++)
