@@ -27,6 +27,7 @@ namespace AssemblerTranslator
         public RelayCommand OpenWorkFolderCommand { get; private set; }
         public RelayCommand SaveAssemblerCodeCommand { get; private set; }
 
+        public bool EnabledASMButtons { get; private set; }
 
         public string CodeText { get { return _codeText; } set { _codeText = value;RaisePropertyChanged("CodeText"); } }
         public string Answer { get { return _answer; } set { _answer= value; RaisePropertyChanged("Answer"); } }
@@ -39,6 +40,8 @@ namespace AssemblerTranslator
             CompileCommand = new RelayCommand(Compile);
             SaveAssemblerCodeCommand = new RelayCommand(SaveAssemblerCode);
             OpenWorkFolderCommand = new RelayCommand(OpenFolder);
+            EnabledASMButtons = false;
+            RaisePropertyChanged("EnabledASMButtons");
         }
 
         private void OpenFolder()
@@ -71,6 +74,8 @@ namespace AssemblerTranslator
         }
         private void Compile()
         {
+            EnabledASMButtons = false;
+            Answer = "";
             Translator translator = new Translator(_codeText);
             try
             {
@@ -83,6 +88,8 @@ namespace AssemblerTranslator
             }
             Log = $"Компиляция успешно завершена в {DateTime.Now}";
             Answer = translator.GetAssemblerCode;
+            EnabledASMButtons = true;
+            RaisePropertyChanged("EnabledASMButtons");
         }
 
         private void SaveAssemblerCode()
