@@ -12,28 +12,25 @@ namespace AssemblerTranslator.DataTypes
 {
     class WhileConstruction : NestedBlock
     {
-        public WhileConstruction(string condition,string[] body)
+        private static int counter = 0;
+        public WhileConstruction(BaseCondition condition,BaseConstruction[] body)
         {
-            _condition = new IntCondition(condition);
-            _codeStrings = new BaseAssignment[body.Length];
-
-            for (int i = 0; i < body.Length; i++)
-            {
-                var parts = body[i].Split('=');
-                _codeStrings[i] = new AssignmentInt(parts[0].Trim(), parts[1].Trim());
-            }
+            _condition = condition;
+            _internalConstructions = body;
         }
         public override void AddToAssemblerCode()
         {
-            CodeGenerator.AddNewInstruction("while_begin:");
+            int current = counter;
+            counter++;
+            CodeGenerator.AddNewInstruction($"while_begin_{current}:");
             _condition.AddToAssemblerCode();
-            CodeGenerator.AddNewInstruction($"{_condition.ReverseOperator} endwhile");
-            foreach (var item in _codeStrings)
+            CodeGenerator.AddNewInstruction($"{_condition.ReverseOperator} endwhile_{current}");
+            foreach (var item in _internalConstructions)
             {
                 item.AddToAssemblerCode();
             }
-            CodeGenerator.AddNewInstruction("jmp while_begin");
-            CodeGenerator.AddNewInstruction("endwhile:");
+            CodeGenerator.AddNewInstruction($"jmp while_begin_{current}");
+            CodeGenerator.AddNewInstruction($"endwhile_{current}:");
         }
     }
 }

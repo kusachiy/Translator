@@ -19,12 +19,13 @@ namespace AssemblerTranslator.Analyzers
         {
             CodeGenerator.Reset();
             CodeGenerator.WriteDataSegment();
+
             _codeAnalyzer.StartAnalysis();
+
             CodeGenerator.WriteVariables(_codeAnalyzer.GetVariables);
             CodeGenerator.WriteSegmentsOfStackAndCode();
 
             _codeAnalyzer.AddAssignmentsCode();
-            _codeAnalyzer.PrintResult();
 
             CodeGenerator.WriteEndOfMainProcedure();
             CodeGenerator.WritePrintValueProcedure();

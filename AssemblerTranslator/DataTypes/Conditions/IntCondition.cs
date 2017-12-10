@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AssemblerTranslator.Expression
 {
-    class IntCondition : ConditionBase
+    class IntCondition : BaseCondition
     {
         public override string Operator { get; set; } ="";
         public override string ReverseOperator { get; set; }

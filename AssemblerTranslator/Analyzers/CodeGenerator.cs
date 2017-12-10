@@ -117,6 +117,11 @@ namespace AssemblerTranslator.Analyzers
                             AddNewInstruction("div bl");
                             AddNewInstruction("push ax");
                             break;
+                        case '%':
+                            AddNewInstruction("cwd");
+                            AddNewInstruction("div bx");
+                            AddNewInstruction("push dx");
+                            break;
                     }
 
                 }
@@ -223,18 +228,7 @@ namespace AssemblerTranslator.Analyzers
                 AddNewInstruction("RET");
                 AddNewInstruction("PRINT ENDP");       
 
-        }
-
-        public static void PrintValue(string _printedValue)
-        {
-            AddNewInstruction("push ax");
-            AddNewInstruction("mov ax, " + _printedValue);
-            AddNewInstruction("CALL PRINT");
-            AddNewInstruction("pop ax");
-        }
-
-
-   
+        }   
 
 
         public static string Generate()

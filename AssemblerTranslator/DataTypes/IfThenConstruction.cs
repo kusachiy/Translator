@@ -12,29 +12,23 @@ namespace AssemblerTranslator.DataTypes.Conditions
     class IfThenConstruction:NestedBlock
     {
         private static int counter = 0;
-        public IfThenConstruction(string condition,string[] body)
+        public IfThenConstruction(BaseCondition condition, BaseConstruction[] body)
         {
-            _condition = new IntCondition(condition);
-            _codeStrings = new BaseAssignment[body.Length];
-                        
-            for (int i = 0; i < body.Length; i++)
-            {
-                var parts = body[i].Split('=');
-                _codeStrings[i] = new AssignmentInt(parts[0].Trim(),parts[1].Trim());
-            }
+            _condition = condition;
+            _internalConstructions = body;
         }
-
         public override void AddToAssemblerCode()
         {
-            string point = $"endif{counter}";
+            int current = counter;
+            counter++;
+            string point = $"endif{current}";
             _condition.AddToAssemblerCode();
             CodeGenerator.AddNewInstruction($"{_condition.ReverseOperator} {point}");
-            foreach (var item in _codeStrings)
+            foreach (var item in _internalConstructions)
             {
                 item.AddToAssemblerCode();
             }
             CodeGenerator.AddNewInstruction($"{point}:");
-            counter++;
         }
     }
 }

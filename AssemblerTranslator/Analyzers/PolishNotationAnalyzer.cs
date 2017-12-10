@@ -18,7 +18,7 @@ namespace AssemblerTranslator.Analyzers
 
         public static bool IsIntOperator(char с)
         {
-            if (("+-/*^()".IndexOf(с) != -1))
+            if (("+-/%*^()".IndexOf(с) != -1))
                 return true;
             return false;
         }
@@ -227,8 +227,9 @@ namespace AssemblerTranslator.Analyzers
                 case '+': return 2;
                 case '-': return 3;
                 case '*': return 4;
-                case '/': return 4;
-                default: return 6;
+                case '/': return 5;
+                case '%': return 6;
+                default: return 7;
             }
         }
         public static byte GetBoolPriority(char s)

@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace AssemblerTranslator.DataTypes.Conditions
 {
-    public abstract class NestedBlock:ITranslatable
+    public abstract class NestedBlock:BaseConstruction
     {
-        public int CountOfRows { get; private set; }
-        protected ConditionBase _condition;
-        protected BaseAssignment[] _codeStrings;
+        protected BaseCondition _condition;
+        protected BaseConstruction[] _internalConstructions;
 
-        public abstract void AddToAssemblerCode();      
+        public override int CountOfRows => _internalConstructions.Select(c=>c.CountOfRows).Sum() + 2;
     }
 }
