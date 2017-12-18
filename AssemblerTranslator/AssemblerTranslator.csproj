@@ -79,8 +79,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataTypes\COInsideConstruction.cs" />
     <Compile Include="DataTypes\BaseConstruction.cs" />
     <Compile Include="DataTypes\Print.cs" />
+    <Compile Include="DataTypes\CaseOfConstruction.cs" />
     <Compile Include="DataTypes\WhileConstruction.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

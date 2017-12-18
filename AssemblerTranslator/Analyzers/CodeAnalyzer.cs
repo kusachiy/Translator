@@ -15,7 +15,7 @@ namespace AssemblerTranslator.Analyzers
     {
         string[] _codeStrings;
         string[] _types = { "integer", "bool" };
-        string[] _keyWords = { "if", "for", "while","print" };
+        string[] _keyWords = { "if", "for","while", "case","print" };
         char[] _separators = { '(', ')', '{', '}',' ','=' };
         List<BaseVariable> _variables;
         List<BaseAssignment> _assignments;
@@ -139,20 +139,41 @@ namespace AssemblerTranslator.Analyzers
                     for (int i = 1; i < parts.Length; i++)
                     {
                         conditionString += parts[i];
-                    }
+                    }                   
                     for (int i = index + 1; i < _codeStrings.Length; i++)
                     {
                         height = i;
                         if (_codeStrings[i].ToLower().Trim() == "endwhile")
                             break;
                         if (i == _codeStrings.Length - 1)
-                            throw new Exception("Endwhile не найдено");
+                            throw new Exception("ENDWHILE не найдено");
                     }
                     var condition = new IntCondition(conditionString);
                     var body = GetInternalConstructions(index + 1,height);
                     WhileConstruction construction = new WhileConstruction(condition, body.ToArray());
                     return construction;
                 }
+                if (firstWord.ToLower() == "case")
+                {
+                    conditionString = parts[1];
+                    if (parts.Last().ToLower() != "of")
+                        throw new Exception("Ожидается OF");
+                    for (int i = index + 1; i < _codeStrings.Length; i++)
+                    {
+                        height = i;
+                        if (_codeStrings[i].ToLower().Trim() == "endcase")
+                            break;
+                        if (i == _codeStrings.Length - 1)
+                            throw new Exception("ENDCASE не найдено");
+                    }
+                    var cVar = _variables.FirstOrDefault(v => v.Name == conditionString.Trim());
+                    if (cVar == null)
+                        throw new Exception($"Неизвестная переменная. Строка №{caret + 1}");
+                    var body = GetInsideConstructions(index + 1, height-1);
+                    CaseOfConstruction construction = new CaseOfConstruction(conditionString,body);
+                    return construction;
+                }
+
                 throw new Exception($"Неизвестная конструкция. Строка {index + 1}");
             }
         }
@@ -187,7 +208,7 @@ namespace AssemblerTranslator.Analyzers
             }
             return true;
         }
-        private BaseConstruction[] GetInternalConstructions(int start,int end)
+         private BaseConstruction[] GetInternalConstructions(int start,int end)
         {
             List<BaseConstruction> constructions = new List<BaseConstruction>();
             for (int i = start; i < end;)
@@ -197,6 +218,43 @@ namespace AssemblerTranslator.Analyzers
                 constructions.Add(cnstr);
             }
             return constructions.ToArray();
+        }
+        private COInsideConstruction[] GetInsideConstructions(int start, int end)
+        {
+            List<COInsideConstruction> constructions = new List<COInsideConstruction>();
+            for (int i = start; i < end; i++)
+            {
+                List<BaseConstruction> list = new List<BaseConstruction>();
+                string str = _codeStrings[i].Trim();
+                var array = str.Split(':');
+                if (array.Length < 2)
+                    throw new Exception($"Ошибка в Case {caret + 1}");
+                var cst = array[0];
+                if (!IsNumber(cst))
+                    throw new Exception($"Неизвестная переменная. Строка №{caret + 1}");
+                
+                while (i < end && !IsCaseCondition(_codeStrings[i+1]))
+                {
+                    i++;
+                    var cnstr = GetConstruction(i);
+                    list.Add(cnstr);
+                }
+                constructions.Add(new COInsideConstruction(cst, list.ToArray()));
+            }
+            return constructions.ToArray();
+        }
+        private bool IsCaseCondition(string str)
+        {
+            return str.Split(':').Length > 1;
+        }
+        private bool IsNumber(string number)
+        {
+            for (int i = 0; i < number.Length; i++)
+            {
+                if (!char.IsDigit(number[i]))
+                    return false;
+            }
+            return true;
         }
     }
 }
