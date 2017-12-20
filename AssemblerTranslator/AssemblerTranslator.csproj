@@ -79,21 +79,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataTypes\COInsideConstruction.cs" />
-    <Compile Include="DataTypes\BaseConstruction.cs" />
-    <Compile Include="DataTypes\Print.cs" />
-    <Compile Include="DataTypes\CaseOfConstruction.cs" />
-    <Compile Include="DataTypes\WhileConstruction.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\COInsideConstruction.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\BaseConstruction.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\Print.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\CaseOfConstruction.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\WhileConstruction.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Analyzers\CodeAnalyzer.cs" />
     <Compile Include="Analyzers\CodeGenerator.cs" />
-    <Compile Include="DataTypes\ITranslatable.cs" />
+    <Compile Include="DataTypes\Interfaces\ITranslatable.cs" />
     <Compile Include="DataTypes\Conditions\ConditionBase.cs" />
-    <Compile Include="DataTypes\IfThenConstruction.cs" />
-    <Compile Include="DataTypes\NestedBlock.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\IfThenConstruction.cs" />
+    <Compile Include="DataTypes\LanguageConstructions\NestedBlock.cs" />
     <Compile Include="DataTypes\Variables\Abstract\BaseVariable.cs" />
     <Compile Include="DataTypes\Variables\MyBool.cs" />
     <Compile Include="DataTypes\Variables\MyInt.cs" />

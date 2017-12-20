@@ -46,8 +46,8 @@ namespace AssemblerTranslator.DataTypes
                 foreach (var condition in item.Body)
                 {
                     condition.AddToAssemblerCode();
-                    CodeGenerator.AddNewInstruction($"jmp endswitch{current}");
                 }
+                CodeGenerator.AddNewInstruction($"jmp endswitch{current}");
                 currentConditionCounter++;
                 conditionCounter++;
             }
